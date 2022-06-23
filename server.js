@@ -1,12 +1,15 @@
 const express = require("express")
-const {buildSchema} = require("graphql")
 const {graphqlHTTP} = require("express-graphql")
-const schema = buildSchema(`
+const {makeExecutableSchema} = require("@graphql-tools/schema")
+const typesText =`
 type Query{
 name:String
 price:Float
-}
-`)
+}`
+
+const schema = makeExecutableSchema({
+    typeDefs:[typesText]
+})
 const root = {
     name:"Ice Cream Shake",
     price:12.23
