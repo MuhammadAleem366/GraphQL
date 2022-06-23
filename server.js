@@ -1,18 +1,35 @@
+const path = require("path")
 const express = require("express")
 const {graphqlHTTP} = require("express-graphql")
+const {loadFilesSync} = require("@graphql-tools/load-files")
 const {makeExecutableSchema} = require("@graphql-tools/schema")
-const typesText =`
-type Query{
-name:String
-price:Float
-}`
+/**
+ *@function {loadFilesSync} accepts pattern that recursively finds
+ * each file that has .graphql extension
+ */
+const typesArray = loadFilesSync(path.join(__dirname,'**/*.graphql'))
 
 const schema = makeExecutableSchema({
-    typeDefs:[typesText]
+    typeDefs:typesArray,
+    resolvers:{
+        Query:{
+            products:async (parent,args,context,info) => {
+                console.info("Getting data from products...")
+                const product = await Promise.resolve(parent.products)
+                return product
+            },
+            orders:async (parent) => {
+                console.info("Getting data from Orders...")
+                const order =  await Promise.resolve(parent.orders)
+                return order
+            }
+
+        }
+    }
 })
 const root = {
-    name:"Ice Cream Shake",
-    price:12.23
+    products:require("./products/products.model"),
+    orders:require("./orders/orders.model")
 }
 const app = express()
 

@@ -1,7 +1,7 @@
 module.exports = [
     {
         data:"2123-32-2",
-        subtotal:5,
+        subTotal:5,
         items:[
             {
                 product:{
